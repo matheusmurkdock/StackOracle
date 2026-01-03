@@ -106,6 +106,7 @@ def main():
     detector = AnomalyDetectorV2(
         store=store,
         recent_window=recent,
+        min_baseline=1.0,
     )
 
     context_builder = ContextBuilderV2(

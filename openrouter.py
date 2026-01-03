@@ -10,7 +10,7 @@ class OpenRouterLLM:
     def __init__(
         self,
         api_key: str | None = None,
-        model: str = "openai/gpt-3.5-turbo",
+        model: str = "google/gemma-3n-e2b-it:free",
         timeout: int = 30,
     ):
         self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")

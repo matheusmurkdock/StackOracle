@@ -2,7 +2,7 @@ import datetime
 import uuid
 import random
 
-def generate_complex_logs(filename="extended_services.log", target_lines=10000):
+def generate_complex_logs(filename="extended_services.log", target_lines=990000):
     services = ["auth-service", "user-service", "payment-service", "inventory-service", 
                 "notification-service", "shipping-service", "search-service", "deploy-service"]
     
