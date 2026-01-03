@@ -1,8 +1,10 @@
 import os
+from dotenv import load_dotenv
 import json
 import urllib.request
 from typing import Dict
 
+load_dotenv()
 
 class OpenRouterLLM:
     def __init__(

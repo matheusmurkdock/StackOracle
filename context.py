@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from datetime import timezone
 from typing import Dict, List, Tuple, Optional
 
 from detector import AnomalyV2

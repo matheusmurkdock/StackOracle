@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from datetime import timezone
 from typing import List, Optional
 
 from store import PatternStoreV2, PatternKey
@@ -73,6 +74,11 @@ class AnomalyDetectorV2:
             stats = self.store.get_stats(key)
 
             # ---- New pattern ----
+            
+            level = key[1]
+
+            if level in {"INFO", "DEBUG"}:
+                continue
             if baseline_avg == 0.0 and recent > 0:
                 anomalies.append(
                     AnomalyV2(

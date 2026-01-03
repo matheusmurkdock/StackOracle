@@ -1,0 +1,93 @@
+2026-01-03T15:20:01 INFO auth-service login success user_id=4421
+2026-01-03T15:20:12 INFO search-service query_executed query="wireless headphones" results=42
+2026-01-03T15:20:45 INFO inventory-service stock_check status=in_stock product_id=sku-9921
+2026-01-03T15:21:05 WARN user-service slow response time=1820ms user_id=4421
+2026-01-03T15:21:18 ERROR notification-service sms_gateway_timeout provider=twilio user_id=4421
+2026-01-03T15:21:40 INFO payment-service charge initiated user_id=4421 amount=89.99
+2026-01-03T15:22:02 INFO payment-service charge success user_id=4421 amount=89.99
+2026-01-03T15:22:15 INFO shipping-service label_created carrier=fedex tracking_id=7732100411
+2026-01-03T15:23:01 INFO auth-service login success user_id=1092
+2026-01-03T15:23:10 ERROR inventory-service stock_sync_failure db_connection_refused node=primary-01
+2026-01-03T15:24:12 INFO search-service query_executed query="gaming laptop" results=12
+2026-01-03T15:25:05 INFO deploy-service deployment completed service=notification-service version=3.1.0
+2026-01-03T15:25:30 WARN search-service cache_miss key="search:v3:laptop" latency=450ms
+2026-01-03T15:26:15 INFO user-service get_profile success user_id=1092
+2026-01-03T15:27:10 ERROR shipping-service address_validation_failed user_id=1092 zip=00000
+2026-01-03T15:28:02 INFO notification-service email_sent template=welcome_email user_id=1092
+2026-01-03T15:28:45 INFO auth-service login success user_id=5532
+2026-01-03T15:29:10 INFO inventory-service stock_reserved product_id=sku-1102 quantity=1
+2026-01-03T15:30:15 ERROR user-service timeout after 5900ms user_id=5532
+2026-01-03T15:31:01 WARN payment-service retry_attempted attempt=2 user_id=5532 error=bank_comm_error
+2026-01-03T15:32:12 INFO payment-service charge success user_id=5532 amount=1250.00
+2026-01-03T15:33:05 INFO shipping-service label_created carrier=ups tracking_id=1Z999AA10122
+2026-01-03T15:34:20 INFO auth-service login success user_id=2210
+2026-01-03T15:35:10 INFO search-service query_executed query="mechanical keyboard" results=89
+2026-01-03T15:36:01 INFO user-service get_profile success user_id=2210
+2026-01-03T15:37:45 ERROR payment-service failed charge uuid=f47ac10b-58cc-4372-a567-0e02b2c3d479
+2026-01-03T15:38:12 INFO notification-service push_delivered device_token=8f22a1b user_id=2210
+2026-01-03T15:39:20 INFO deploy-service deployment completed service=search-service version=0.9.4-beta
+2026-01-03T15:40:05 WARN shipping-service regional_delay area="NorthEast" status=weather_alert
+2026-01-03T15:41:15 INFO auth-service login success user_id=9901
+2026-01-03T15:42:10 INFO inventory-service stock_check status=out_of_stock product_id=sku-4432
+2026-01-03T15:43:01 INFO user-service get_profile success user_id=9901
+2026-01-03T15:44:45 ERROR auth-service invalid_token_format ip=192.168.1.104
+2026-01-03T15:45:12 INFO search-service query_executed query="usb-c cable" results=215
+2026-01-03T15:46:10 WARN user-service slow response time=3100ms user_id=9901
+2026-01-03T15:47:05 INFO notification-service email_sent template=order_confirmation user_id=9901
+2026-01-03T15:48:22 INFO auth-service login success user_id=3112
+2026-01-03T15:49:15 INFO inventory-service stock_reserved product_id=sku-8812 quantity=2
+2026-01-03T15:50:30 ERROR payment-service failed charge uuid=d9b23f10-e12b-42d3-a456-426614174000
+2026-01-03T15:51:01 INFO shipping-service shipment_dispatched carrier=dhl tracking_id=JD001223344
+2026-01-03T15:52:12 INFO auth-service login success user_id=7721
+2026-01-03T15:53:05 INFO search-service query_executed query="gaming mouse" results=54
+2026-01-03T15:54:15 INFO user-service get_profile success user_id=7721
+2026-01-03T15:55:20 ERROR notification-service provider_down provider=sendgrid status_code=503
+2026-01-03T15:56:01 INFO deploy-service deployment completed service=inventory-service version=2.2.1
+2026-01-03T15:57:45 WARN search-service slow response time=1150ms user_id=7721
+2026-01-03T15:58:12 INFO auth-service login success user_id=1102
+2026-01-03T15:59:30 INFO payment-service charge initiated user_id=1102 amount=15.00
+2026-01-03T16:00:10 INFO payment-service charge success user_id=1102 amount=15.00
+2026-01-03T16:01:22 ERROR shipping-service carrier_api_unreachable carrier=fedex
+2026-01-03T16:02:05 INFO inventory-service stock_check status=in_stock product_id=sku-2210
+2026-01-03T16:03:01 INFO auth-service login success user_id=5055
+2026-01-03T16:04:15 INFO search-service query_executed query="office chair" results=18
+2026-01-03T16:05:30 WARN user-service slow response time=2400ms user_id=5055
+2026-01-03T16:06:12 INFO notification-service email_sent template=password_reset user_id=5055
+2026-01-03T16:07:45 ERROR user-service timeout after 5000ms user_id=5055
+2026-01-03T16:08:10 INFO auth-service login success user_id=8821
+2026-01-03T16:09:05 INFO inventory-service stock_reserved product_id=sku-9090 quantity=1
+2026-01-03T16:10:20 INFO payment-service charge initiated user_id=8821 amount=250.00
+2026-01-03T16:11:01 INFO payment-service charge success user_id=8821 amount=250.00
+2026-01-03T16:12:33 ERROR shipping-service invalid_dimensions product_id=sku-9090
+2026-01-03T16:13:45 INFO auth-service login success user_id=1290
+2026-01-03T16:14:15 INFO search-service query_executed query="desk lamp" results=110
+2026-01-03T16:15:01 INFO deploy-service deployment completed service=payment-service version=2.1.4
+2026-01-03T16:16:22 WARN notification-service rate_limit_approaching user_id=1290
+2026-01-03T16:17:10 INFO user-service get_profile success user_id=1290
+2026-01-03T16:18:05 ERROR inventory-service deadlock_detected session_id=99281
+2026-01-03T16:19:30 INFO auth-service login success user_id=6671
+2026-01-03T16:20:10 INFO search-service query_executed query="monitor stand" results=33
+2026-01-03T16:21:45 INFO inventory-service stock_check status=in_stock product_id=sku-5541
+2026-01-03T16:22:12 INFO payment-service charge initiated user_id=6671 amount=29.99
+2026-01-03T16:23:01 INFO payment-service charge success user_id=6671 amount=29.99
+2026-01-03T16:24:15 WARN shipping-service high_volume_delay route="intl-hub-01"
+2026-01-03T16:25:33 INFO notification-service email_sent template=shipping_update user_id=6671
+2026-01-03T16:26:10 ERROR auth-service brute_force_detected ip=203.0.113.42
+2026-01-03T16:27:05 INFO auth-service login success user_id=4110
+2026-01-03T16:28:45 INFO user-service get_profile success user_id=4110
+2026-01-03T16:29:12 ERROR search-service elasticsearch_node_down cluster_id=prod-us-east
+2026-01-03T16:30:01 INFO auth-service login success user_id=9002
+2026-01-03T16:31:15 INFO inventory-service stock_reserved product_id=sku-7712 quantity=5
+2026-01-03T16:32:30 WARN user-service slow response time=1950ms user_id=9002
+2026-01-03T16:33:45 INFO payment-service charge initiated user_id=9002 amount=5.50
+2026-01-03T16:34:02 INFO payment-service charge success user_id=9002 amount=5.50
+2026-01-03T16:35:10 ERROR payment-service failed charge uuid=a12e3456-b78c-90d1-e234-567812345678
+2026-01-03T16:36:22 INFO shipping-service label_created carrier=usps tracking_id=940011122233
+2026-01-03T16:37:05 INFO auth-service login success user_id=2119
+2026-01-03T16:38:15 INFO search-service query_executed query="type-c hub" results=92
+2026-01-03T16:39:33 INFO deploy-service deployment completed service=user-service version=1.4.5
+2026-01-03T16:40:10 WARN inventory-service low_stock_warning product_id=sku-8812 threshold=10
+2026-01-03T16:41:01 INFO notification-service push_delivered device_token=7g33b2c user_id=2119
+2026-01-03T16:42:45 ERROR user-service timeout after 6500ms user_id=2119
+2026-01-03T16:43:12 INFO auth-service login success user_id=5001
+2026-01-03T16:44:20 INFO user-service get_profile success user_id=5001

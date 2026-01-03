@@ -74,6 +74,8 @@ Deploy correlation:
 {deploy_info}
 
 Rules:
+- Do NOT mention security issues unless explicitly stated in the logs
+- Do NOT use words like "breach", "attack", or "unauthorized"
 - Do NOT propose fixes
 - Do NOT speculate beyond the facts
 - Do NOT claim causation

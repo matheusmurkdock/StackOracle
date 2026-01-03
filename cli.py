@@ -154,11 +154,24 @@ def main():
     # ---- Explain anomalies (budget guarded) ----
     print("\n=== ANOMALY REPORT ===")
 
+    error_services = {
+        anomaly.key[0]
+        for anomaly in anomalies
+        if anomaly.key[1] == "ERROR"
+    }
+    
     for idx, anomaly in enumerate(anomalies[: args.max_anomalies], 1):
+        
+        svc, level, template = anomaly.key
+
+        if level == "WARN" and svc in error_services:
+            continue
+        
         ctx = context_builder.build(
             anomaly,
             deploy_events=deploy_events,
         )
+
 
         try:
             explanation = explainer.explain(ctx)
@@ -167,7 +180,6 @@ def main():
             print(str(e))
             continue
 
-        svc, level, template = anomaly.key
 
 
         print("\n" + "=" * 70)

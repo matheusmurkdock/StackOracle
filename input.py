@@ -64,8 +64,14 @@ UUID_PATTERN = re.compile(
 
 
 # ---------- Normalization ----------
+TIMEOUT_PATTERN = re.compile(r"timeout after \d+ms")
+SLOW_RESPONSE_PATTERN = re.compile(r"slow response time=\d+ms")
 
 def normalize_message(message: str) -> Tuple[str, Dict[str, str]]:
+    message = TIMEOUT_PATTERN.sub("timeout after <TIMEOUT>ms", message)
+    message = SLOW_RESPONSE_PATTERN.sub(
+        "slow response time=<LATENCY>ms", message
+    )
     variables: Dict[str, str] = {}
 
     def repl_uuid(match):
