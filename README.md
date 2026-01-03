@@ -115,3 +115,10 @@ Where to look
 • Request handling path
 • Recent changes in user-service 1.4.2
 ```
+
+## Project Status
+This project was built as a hackathon prototype with production-grade design intent.
+### Future Work (post-hackathon)
+- More log formats
+- Rule packs
+- CI / incident integrations
