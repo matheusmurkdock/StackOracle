@@ -3,7 +3,7 @@ import sys
 from datetime import datetime, timedelta
 from datetime import timezone
 
-from input import LogIngestor
+from v3.ingest import ingest_line
 from store import PatternStoreV2
 from detector import AnomalyDetectorV2
 from context import ContextBuilderV2, DeployEvent
@@ -86,6 +86,14 @@ def extract_deploy_events(events):
 
 
 # ---------------- Main ----------------
+ingest_stats = {
+    "parsed": 0,
+    "failed": 0,
+    "unrecognized_format": 0,
+}
+
+all_events = []
+
 
 def main():
     args = parse_args()
@@ -96,7 +104,7 @@ def main():
     context_window = timedelta(minutes=args.context_minutes)
 
     # ---- Core components ----
-    ingestor = LogIngestor()
+    
 
     store = PatternStoreV2(
         window_size=window,
@@ -117,25 +125,28 @@ def main():
     explainer = ExplainerV2(OpenRouterLLM())
 
     # ---- Input ----
-    if args.log_file:
-        source = open(args.log_file)
-    else:
-        source = sys.stdin
-
-    all_events = []
-
-    for event in ingestor.ingest(source):
-        store.add(event)
-        all_events.append(event)
+    with open(args.log_file) as f:
+        for line in f:
+            event = ingest_line(line)
+            if not event:
+                ingest_stats["failed"] += 1
+                ingest_stats["unrecognized_format"] += 1
+                continue
+            
+            ingest_stats["parsed"] += 1
+            all_events.append(event)
+            store.add(event)
 
     # ---- Ingest metrics ----
     print("\nIngestion summary:")
-    print(f"  Parsed logs : {ingestor.metrics.parsed}")
-    print(f"  Failed logs : {ingestor.metrics.failed}")
-    if ingestor.metrics.failed:
+    print(f"  Parsed logs : {ingest_stats['parsed']}")
+    print(f"  Failed logs : {ingest_stats['failed']}")
+    if ingest_stats["failed"]:
         print("  Failure reasons:")
-        for r, c in ingestor.metrics.failures_by_reason.items():
-            print(f"    {r}: {c}")
+        print(
+            f"  unrecognized_format: "
+            f"{ingest_stats['unrecognized_format']}"
+        )
 
     # ---- Detect anomalies ----
     now = datetime.now(timezone.utc)

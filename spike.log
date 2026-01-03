@@ -1,21 +1,13 @@
-# ===============================
-# BASELINE (recent, same window)
-# ===============================
-2026-01-03T13:55:01 ERROR user-service timeout after 5000ms user_id=101
-2026-01-03T13:55:02 ERROR user-service timeout after 5000ms user_id=102
-2026-01-03T13:55:03 ERROR user-service timeout after 5000ms user_id=103
-2026-01-03T13:55:04 ERROR user-service timeout after 5000ms user_id=104
-2026-01-03T13:55:05 ERROR user-service timeout after 5000ms user_id=105
-2026-01-03T13:55:06 ERROR user-service timeout after 5000ms user_id=106
+# Baseline (inside window)
+2026-01-03T13:58:01 ERROR user-service timeout after 5000ms user_id=1
+2026-01-03T13:58:02 ERROR user-service timeout after 5000ms user_id=2
+2026-01-03T13:58:03 ERROR user-service timeout after 5000ms user_id=3
+2026-01-03T13:58:04 ERROR user-service timeout after 5000ms user_id=4
+2026-01-03T13:58:05 ERROR user-service timeout after 5000ms user_id=5
 
-# ===============================
-# SPIKE (same pattern, shortly after)
-# ===============================
-2026-01-03T14:00:01 ERROR user-service timeout after 5200ms user_id=201
-2026-01-03T14:00:02 ERROR user-service timeout after 5300ms user_id=202
-2026-01-03T14:00:03 ERROR user-service timeout after 5400ms user_id=203
-2026-01-03T14:00:04 ERROR user-service timeout after 5500ms user_id=204
-2026-01-03T14:00:05 ERROR user-service timeout after 5600ms user_id=205
-2026-01-03T14:00:06 ERROR user-service timeout after 5700ms user_id=206
-2026-01-03T14:00:07 ERROR user-service timeout after 5800ms user_id=207
-2026-01-03T14:00:08 ERROR user-service timeout after 5900ms user_id=208
+# Spike
+2026-01-03T14:00:01 ERROR user-service timeout after 5200ms user_id=10
+2026-01-03T14:00:02 ERROR user-service timeout after 5300ms user_id=11
+2026-01-03T14:00:03 ERROR user-service timeout after 5400ms user_id=12
+2026-01-03T14:00:04 ERROR user-service timeout after 5500ms user_id=13
+2026-01-03T14:00:05 ERROR user-service timeout after 5600ms user_id=14
