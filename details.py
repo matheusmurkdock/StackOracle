@@ -1,82 +1,103 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Protocol
 
-from context import AnomalyContext
+from context import AnomalyContextV2
 
+
+# ---------- Output Model ----------
 
 @dataclass(frozen=True)
-class Explanation:
+class ExplanationV2:
     summary: str
     why_it_matters: str
     where_to_look: str
     confidence: float
 
 
-class Explainer:
-    def __init__(self, llm_client):
-        """
-        llm_client must expose:
-        - complete(prompt: str) -> str
-        """
-        self.llm = llm_client
+# ---------- LLM Interface ----------
 
-    def explain(self, ctx: AnomalyContext) -> Explanation:
+class LLMClient(Protocol):
+    def complete(self, prompt: str) -> str:
+        ...
+
+
+# ---------- Explainer ----------
+
+class ExplainerV2:
+    def __init__(self, llm: LLMClient):
+        self.llm = llm
+
+    def explain(self, ctx: AnomalyContextV2) -> ExplanationV2:
         prompt = self._build_prompt(ctx)
-        response = self.llm.complete(prompt)
+        raw = self.llm.complete(prompt)
+        return self._parse_response(raw)
 
-        return self._parse_response(response)
+    # ---------- Prompt ----------
 
-    def _build_prompt(self, ctx: AnomalyContext) -> str:
+    def _build_prompt(self, ctx: AnomalyContextV2) -> str:
         a = ctx.anomaly
+        svc, level, template = a.key
+
+        deploy_info = (
+            f"Yes – version {ctx.deploy_event.version} at {ctx.deploy_event.timestamp}"
+            if ctx.deploy_event
+            else "No deploy detected in this window"
+        )
 
         return f"""
-You are a senior production engineer assisting during an incident.
+You are a senior production engineer assisting during an active incident.
+
+You MUST follow the rules exactly.
 
 Facts:
-- Service: {a.service}
-- Log pattern: "{a.template}"
+- Service: {svc}
+- Log level: {level}
+- Pattern: "{template}"
 - Reason flagged: {a.reason}
 - Severity score: {a.severity:.2f}
 - First seen: {a.first_seen}
 - Last seen: {a.last_seen}
-- Recent count: {a.recent_count}
-- Baseline avg count: {a.baseline_count:.2f}
+- Recent weighted count: {a.recent_weighted}
+- Baseline weighted avg: {a.baseline_weighted}
 
-Context window: {ctx.window_start} to {ctx.window_end}
+Context window:
+- From: {ctx.window_start}
+- To: {ctx.window_end}
 
-Log level distribution in window:
+Level breakdown in window:
 {ctx.level_breakdown}
 
-Related patterns in same service:
+Related patterns (same service):
 {ctx.related_patterns}
 
-Instructions:
+Deploy correlation:
+{deploy_info}
+
+Rules:
 - Do NOT propose fixes
 - Do NOT speculate beyond the facts
-- Explain why this anomaly matters
-- Suggest which area of the system to investigate
-- Be concise and precise
+- Do NOT claim causation
+- Explain impact and investigation direction only
 
-Return the response in this exact format:
+Return output in EXACTLY this format:
 
 SUMMARY:
-<one paragraph>
+<1 short paragraph>
 
 WHY IT MATTERS:
-<one paragraph>
+<1 short paragraph>
 
 WHERE TO LOOK:
-<bullet points>
+- <bullet>
+- <bullet>
 
 CONFIDENCE:
 <number between 0 and 1>
 """
 
-    def _parse_response(self, text: str) -> Explanation:
-        """
-        Extremely strict parsing.
-        If the model deviates, we fail fast.
-        """
+    # ---------- Parsing ----------
+
+    def _parse_response(self, text: str) -> ExplanationV2:
         sections = {}
         current = None
 
@@ -92,14 +113,17 @@ CONFIDENCE:
                 sections[current].append(line)
 
         try:
-            return Explanation(
+            confidence = float(sections["CONFIDENCE"][0])
+            if not 0.0 <= confidence <= 1.0:
+                raise ValueError("confidence out of range")
+
+            return ExplanationV2(
                 summary=" ".join(sections["SUMMARY"]),
                 why_it_matters=" ".join(sections["WHY IT MATTERS"]),
                 where_to_look="\n".join(sections["WHERE TO LOOK"]),
-                confidence=float(sections["CONFIDENCE"][0]),
+                confidence=confidence,
             )
         except Exception as e:
             raise ValueError(
-                f"LLM response malformed: {text}"
+                f"Malformed LLM response:\n{text}"
             ) from e
-

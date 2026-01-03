@@ -1,42 +1,21 @@
-# cli.py
 import argparse
 import sys
 from datetime import datetime, timedelta
+from datetime import timezone
 
-from input import ingest
-from store import PatternStore
-from detector import AnomalyDetector
-from context import ContextBuilder
-from details import Explainer
+from input import LogIngestor
+from store import PatternStoreV2
+from detector import AnomalyDetectorV2
+from context import ContextBuilderV2, DeployEvent
+from details import ExplainerV2
+from openrouter import OpenRouterLLM
 
 
-class StdoutLLM:
-    """
-    Placeholder LLM.
-    Replace with real client later.
-    """
-
-    def complete(self, prompt: str) -> str:
-        return """
-SUMMARY:
-An abnormal log pattern was detected.
-
-WHY IT MATTERS:
-The frequency deviates significantly from historical behavior.
-
-WHERE TO LOOK:
-- Recent deployments
-- Upstream dependencies
-- Service configuration
-
-CONFIDENCE:
-0.50
-"""
-
+# ---------------- CLI ----------------
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="AI Log-Whisperer – Production Debug Copilot"
+        description="AI Log-Whisperer V2 — Production Debug Copilot"
     )
     parser.add_argument(
         "--log-file",
@@ -52,71 +31,173 @@ def parse_args():
         "--recent-minutes",
         type=int,
         default=2,
-        help="Recent window for spike detection",
+        help="Recent window for anomaly detection",
+    )
+    parser.add_argument(
+        "--context-minutes",
+        type=int,
+        default=5,
+        help="Context window for correlation",
+    )
+    parser.add_argument(
+        "--max-anomalies",
+        type=int,
+        default=5,
+        help="Max anomalies to explain (LLM budget guard)",
     )
     return parser.parse_args()
 
 
+# ---------------- Helpers ----------------
+
+def extract_deploy_events(events):
+    """
+    VERY simple heuristic:
+    looks for logs like:
+    deploy-service deployment completed service=X version=Y
+    """
+    deploys = []
+
+    for e in events:
+        if (
+            e.service == "deploy-service"
+            and "deployment completed" in e.template
+        ):
+            # extremely naive parsing, intentional for hackathon
+            parts = e.raw.split()
+            service = None
+            version = None
+            for p in parts:
+                if p.startswith("service="):
+                    service = p.split("=", 1)[1]
+                if p.startswith("version="):
+                    version = p.split("=", 1)[1]
+
+            if service and version:
+                deploys.append(
+                    DeployEvent(
+                        service=service,
+                        version=version,
+                        timestamp=e.timestamp,
+                    )
+                )
+
+    return deploys
+
+
+# ---------------- Main ----------------
+
 def main():
     args = parse_args()
 
+    # ---- Windows ----
     window = timedelta(minutes=args.window_minutes)
     recent = timedelta(minutes=args.recent_minutes)
+    context_window = timedelta(minutes=args.context_minutes)
 
-    store = PatternStore(
+    # ---- Core components ----
+    ingestor = LogIngestor()
+
+    store = PatternStoreV2(
         window_size=window,
         bucket_size=timedelta(minutes=1),
     )
 
-    detector = AnomalyDetector(
+    detector = AnomalyDetectorV2(
         store=store,
         recent_window=recent,
     )
 
-    context_builder = ContextBuilder(store)
-    explainer = Explainer(StdoutLLM())
+    context_builder = ContextBuilderV2(
+        store=store,
+        context_window=context_window,
+    )
 
+    explainer = ExplainerV2(OpenRouterLLM())
+
+    # ---- Input ----
     if args.log_file:
         source = open(args.log_file)
     else:
         source = sys.stdin
 
-    for event in ingest(source):
-        store.add(event)
+    all_events = []
 
-    now = datetime.utcnow()
-    anomalies = detector.detect(now)
+    for event in ingestor.ingest(source):
+        store.add(event)
+        all_events.append(event)
+
+    # ---- Ingest metrics ----
+    print("\nIngestion summary:")
+    print(f"  Parsed logs : {ingestor.metrics.parsed}")
+    print(f"  Failed logs : {ingestor.metrics.failed}")
+    if ingestor.metrics.failed:
+        print("  Failure reasons:")
+        for r, c in ingestor.metrics.failures_by_reason.items():
+            print(f"    {r}: {c}")
+
+    # ---- Detect anomalies ----
+    now = datetime.now(timezone.utc)
+    anomalies, near_misses = detector.detect(now)
 
     if not anomalies:
-        print("No anomalies detected.")
+        print("\nNo anomalies detected.")
         return
 
-    print(f"\nDetected {len(anomalies)} anomalies:\n")
+    print(f"\nDetected {len(anomalies)} anomalies.")
+    if near_misses:
+        print(f"Near misses: {len(near_misses)} (not alerted)")
 
-    for idx, anomaly in enumerate(anomalies, 1):
-        ctx = context_builder.build(anomaly)
-        explanation = explainer.explain(ctx)
+    # ---- Deploy correlation ----
+    deploy_events = extract_deploy_events(all_events)
 
-        print("=" * 60)
+    # ---- Explain anomalies (budget guarded) ----
+    print("\n=== ANOMALY REPORT ===")
+
+    for idx, anomaly in enumerate(anomalies[: args.max_anomalies], 1):
+        ctx = context_builder.build(
+            anomaly,
+            deploy_events=deploy_events,
+        )
+
+        try:
+            explanation = explainer.explain(ctx)
+        except Exception as e:
+            print("\n[LLM ERROR]")
+            print(str(e))
+            continue
+
+        svc, level, template = anomaly.key
+
+
+        print("\n" + "=" * 70)
         print(f"Anomaly #{idx}")
-        print(f"Service   : {anomaly.service}")
-        print(f"Pattern   : {anomaly.template}")
+        print(f"Service   : {svc}")
+        print(f"Level     : {level}")
+        print(f"Pattern   : {template}")
         print(f"Reason    : {anomaly.reason}")
         print(f"Severity  : {anomaly.severity:.2f}")
-        print()
-        print("Summary:")
+
+        if ctx.deploy_event:
+            print(
+                f"Deploy    : {ctx.deploy_event.service} "
+                f"{ctx.deploy_event.version}"
+            )
+
+        print("\nSummary:")
         print(explanation.summary)
-        print()
-        print("Why it matters:")
+
+        print("\nWhy it matters:")
         print(explanation.why_it_matters)
-        print()
-        print("Where to look:")
+
+        print("\nWhere to look:")
         print(explanation.where_to_look)
-        print()
-        print(f"Confidence: {explanation.confidence:.2f}")
-        print("=" * 60)
+
+        print(f"\nConfidence: {explanation.confidence:.2f}")
+        print("=" * 70)
+
+    print("\nDone.")
 
 
 if __name__ == "__main__":
     main()
-

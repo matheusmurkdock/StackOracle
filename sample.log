@@ -1,0 +1,73 @@
+2026-01-03T13:55:01 INFO auth-service login success user_id=101
+2026-01-03T13:55:05 INFO auth-service login success user_id=102
+2026-01-03T13:55:10 INFO auth-service login success user_id=103
+
+2026-01-03T13:56:01 INFO user-service get_profile success user_id=101
+2026-01-03T13:56:02 INFO user-service get_profile success user_id=102
+2026-01-03T13:56:03 INFO user-service get_profile success user_id=103
+
+2026-01-03T13:57:11 WARN user-service slow response time=1200ms user_id=101
+2026-01-03T13:57:20 WARN user-service slow response time=1350ms user_id=102
+
+2026-01-03T13:58:01 INFO payment-service charge initiated user_id=101 amount=499
+2026-01-03T13:58:03 INFO payment-service charge success user_id=101 amount=499
+
+2026-01-03T14:00:01 ERROR user-service timeout after 5000ms user_id=201
+2026-01-03T14:00:02 ERROR user-service timeout after 5100ms user_id=202
+
+2026-01-03T14:00:05 INFO auth-service login success user_id=201
+2026-01-03T14:00:06 INFO auth-service login success user_id=202
+
+2026-01-03T14:01:01 ERROR user-service timeout after 5200ms user_id=203
+2026-01-03T14:01:02 ERROR user-service timeout after 5300ms user_id=204
+2026-01-03T14:01:03 ERROR user-service timeout after 5400ms user_id=205
+2026-01-03T14:01:04 ERROR user-service timeout after 5500ms user_id=206
+
+2026-01-03T14:01:10 WARN user-service slow response time=2100ms user_id=203
+2026-01-03T14:01:11 WARN user-service slow response time=2300ms user_id=204
+
+2026-01-03T14:02:01 ERROR payment-service failed charge uuid=123e4567-e89b-12d3-a456-426614174000
+2026-01-03T14:02:02 ERROR payment-service failed charge uuid=987e6543-e21b-98d3-b654-123456789abc
+
+2026-01-03T14:02:05 INFO deploy-service deployment completed service=user-service version=1.4.2
+
+2026-01-03T14:02:20 ERROR user-service timeout after 6000ms user_id=301
+2026-01-03T14:02:21 ERROR user-service timeout after 6100ms user_id=302
+2026-01-03T14:02:22 ERROR user-service timeout after 6200ms user_id=303
+
+2026-01-03T13:55:01 INFO auth-service login success user_id=101
+2026-01-03T13:55:05 INFO auth-service login success user_id=102
+2026-01-03T13:55:10 INFO auth-service login success user_id=103
+
+2026-01-03T13:56:01 INFO user-service get_profile success user_id=101
+2026-01-03T13:56:02 INFO user-service get_profile success user_id=102
+2026-01-03T13:56:03 INFO user-service get_profile success user_id=103
+
+2026-01-03T13:57:11 WARN user-service slow response time=1200ms user_id=101
+2026-01-03T13:57:20 WARN user-service slow response time=1350ms user_id=102
+
+2026-01-03T13:58:01 INFO payment-service charge initiated user_id=101 amount=499
+2026-01-03T13:58:03 INFO payment-service charge success user_id=101 amount=499
+
+2026-01-03T14:00:01 ERROR user-service timeout after 5000ms user_id=201
+2026-01-03T14:00:02 ERROR user-service timeout after 5100ms user_id=202
+
+2026-01-03T14:00:05 INFO auth-service login success user_id=201
+2026-01-03T14:00:06 INFO auth-service login success user_id=202
+
+2026-01-03T14:01:01 ERROR user-service timeout after 5200ms user_id=203
+2026-01-03T14:01:02 ERROR user-service timeout after 5300ms user_id=204
+2026-01-03T14:01:03 ERROR user-service timeout after 5400ms user_id=205
+2026-01-03T14:01:04 ERROR user-service timeout after 5500ms user_id=206
+
+2026-01-03T14:01:10 WARN user-service slow response time=2100ms user_id=203
+2026-01-03T14:01:11 WARN user-service slow response time=2300ms user_id=204
+
+2026-01-03T14:02:01 ERROR payment-service failed charge uuid=123e4567-e89b-12d3-a456-426614174000
+2026-01-03T14:02:02 ERROR payment-service failed charge uuid=987e6543-e21b-98d3-b654-123456789abc
+
+2026-01-03T14:02:05 INFO deploy-service deployment completed service=user-service version=1.4.2
+
+2026-01-03T14:02:20 ERROR user-service timeout after 6000ms user_id=301
+2026-01-03T14:02:21 ERROR user-service timeout after 6100ms user_id=302
+2026-01-03T14:02:22 ERROR user-service timeout after 6200ms user_id=303
