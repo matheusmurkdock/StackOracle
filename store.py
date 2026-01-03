@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from datetime import timezone
 from typing import Dict, List, Tuple
 
-from input import LogEvent
+from v3.ingest import LogEvent
 
 
 PatternKey = Tuple[str, str, str]  # (service, level, template)

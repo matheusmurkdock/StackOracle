@@ -10,7 +10,7 @@ class OpenRouterLLM:
     def __init__(
         self,
         api_key: str | None = None,
-        model: str = "google/gemma-3n-e2b-it:free",
+        model: str = "google/gemini-2.0-flash-exp:free",
         timeout: int = 30,
     ):
         self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")

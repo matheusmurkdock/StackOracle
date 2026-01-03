@@ -1,8 +1,0 @@
-2026-01-03T14:00:01 ERROR user-service timeout after 5000ms user_id=101
-2026-01-03T14:00:02 ERROR user-service timeout after 5200ms user_id=102
-
-2026-01-03T14:00:03 ERROR user-service timeout after 5s user_id=103
-2026-01-03T14:00:04 ERROR user-service timeout after 6s user_id=104
-
-2026-01-03T14:00:05 ERROR user-service timeout after 5000000us user_id=105
-2026-01-03T14:00:06 ERROR user-service timeout after 6000000us user_id=106
