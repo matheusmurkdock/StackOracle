@@ -1,4 +1,7 @@
 # StackOracle  
+---
+[![StackOracle Demo](https://img.youtube.com/vi/ljWG0yz72O0/0.jpg)](https://www.youtube.com/watch?v=ljWG0yz72O0)
+---
 **An AI Production Debug Copilot**
 
 > We don’t fix bugs.  
@@ -82,7 +85,22 @@ Just signal.
    - No fixes suggested — only direction
 
 ---
+### Architecture
+```java
+log_ingest_v3/        ← ingestion layer (V3)
+  ├── detect.py
+  ├── parsers.py
+  ├── normalize.py
+  └── ingest.py
 
+core/                 ← analysis engine (stable)
+  ├── store.py
+  ├── detector.py
+  ├── context.py
+  └── details.py
+
+cli.py                ← orchestration / policy
+```
 ### Severity (human-readable)
 - `CRITICAL` — immediate attention required
 - `HIGH` — significant issue
